@@ -1,37 +1,21 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { useAuth } from '../context/AuthContext';
+import React, { useContext } from 'react';
+import { View, Text, Button } from 'react-native';
+import { AuthContext } from '../context/AuthContext';
 
-export default function HomeScreen() {
-  const { user, logout } = useAuth();
+export default function HomeScreen({ navigation }) {
+  const { user, logout } = useContext(AuthContext);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Welcome, {user.username}</Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Hoş geldin {user?.username}</Text>
 
-      <Pressable style={styles.button} onPress={logout}>
-        <Text style={styles.buttonText}>Logout</Text>
-      </Pressable>
+      <Button
+        title="Çıkış Yap"
+        onPress={() => {
+          logout();
+          navigation.navigate('Login');
+        }}
+      />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 22,
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: '#dc2626',
-    padding: 12,
-    borderRadius: 6,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-});

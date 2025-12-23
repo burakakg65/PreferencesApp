@@ -1,14 +1,16 @@
-import { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
-import { useAuth } from '../context/AuthContext';
+import React, { useState, useContext } from 'react';
+import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
+import { AuthContext } from '../context/AuthContext';
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState('');
-  const { login } = useAuth();
+  const { login } = useContext(AuthContext);
 
   const handleLogin = () => {
-    if (!username.trim()) return;
-    login(username);
+    if (username.trim() !== '') {
+      login(username);
+      navigation.navigate('Home');
+    }
   };
 
   return (
@@ -16,15 +18,13 @@ export default function LoginScreen() {
       <Text style={styles.title}>Login</Text>
 
       <TextInput
-        placeholder="Enter username"
+        style={styles.input}
+        placeholder="Kullanıcı adı"
         value={username}
         onChangeText={setUsername}
-        style={styles.input}
       />
 
-      <Pressable style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </Pressable>
+      <Button title="Giriş Yap" onPress={handleLogin} />
     </View>
   );
 }
@@ -36,24 +36,13 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 28,
-    textAlign: 'center',
+    fontSize: 24,
     marginBottom: 20,
+    textAlign: 'center',
   },
   input: {
     borderWidth: 1,
     padding: 10,
-    borderRadius: 6,
     marginBottom: 15,
-  },
-  button: {
-    backgroundColor: '#2563eb',
-    padding: 12,
-    borderRadius: 6,
-  },
-  buttonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: 'bold',
   },
 });

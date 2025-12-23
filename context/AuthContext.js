@@ -1,11 +1,9 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useState } from 'react';
 
-const AuthContext = createContext(undefined);
+export const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const login = (username) => {
     setUser({ username });
@@ -15,41 +13,9 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
-  useEffect(() => {
-    const loadUser = async () => {
-      const storedUser = await AsyncStorage.getItem('user');
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
-      setLoading(false);
-    };
-
-    loadUser();
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      AsyncStorage.setItem('user', JSON.stringify(user));
-    } else {
-      AsyncStorage.removeItem('user');
-    }
-  }, [user]);
-
-  if (loading) {
-    return null;
-  }
-
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used inside AuthProvider');
-  }
-  return context;
-}
+};
